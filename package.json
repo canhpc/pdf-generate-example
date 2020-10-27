@@ -1,0 +1,20 @@
+{
+  "name": "chartjs-pdf",
+  "version": "1.0.0",
+  "description": "Create pdf report which include graph using chartjs",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/canhpc/pdf-generate-example.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/canhpc/pdf-generate-example/issues"
+  },
+  "homepage": "https://github.com/canhpc/pdf-generate-example#readme"
+}

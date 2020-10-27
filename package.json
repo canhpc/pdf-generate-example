@@ -21,7 +21,9 @@
     "chart.js": "^2.9.4",
     "chartjs": "^0.3.24",
     "chartjs-node-canvas": "^3.0.6",
+    "ejs": "^3.1.5",
     "express": "^4.17.1",
+    "html-pdf": "^2.2.0",
     "pdf-lib": "^1.11.2"
   }
 }

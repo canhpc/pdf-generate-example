@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+  </style>
+  <%- include('./report_css.ejs') %>
+
+  
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.1.1/jspdf.umd.min.js"></script> -->
+</head>
+<body>
+  <div id='mypage'  class="container" style="width: 1684px; height: 1191px;" > 
+    <!-- header row -->
+    <div class="row" style="height: 7%;" >   
+      <div style="position: absolute; bottom: 10px;" >
+        <div>
+          Microsoft Coud Solution Provider
+        </div>
+      </div>
+      <div class="primary-color" style="position: absolute; bottom: 0; width: 100%; height: 10px;"></div>
+    </div> 
+    
+    <!-- first row: total charge  + cloocus info -->
+    <div class="row" style="height: 15%;">
+      <div class="col-5">
+        <table class="grid align-center">
+          <tr>
+            <td>
+              <span>
+                <%= billDetail.yearMonth %>
+              <span>
+            <td>
+              <span>
+                사용 청구서
+              </span>
+            </td>
+            <td>
+              <span>
+                남부하실 금액은
+              </span>
+            </td>
+            <td>
+              <span>
+                <%= billDetail.totalCharge %>
+              </span>
+            </td>
+            <td>
+              <span>
+                원(VAT포함) 입니다.
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="col-4"></div>
+      <div class="col-3"></div>
+    </div>
+
+    <!-- 2nd row: bill summary + customer name  -->
+    <div class="row align-center" style="height: 12%;">
+      <div class="col-4">
+        <div class="constrat-title">
+          <span> 고객명 </span>
+        </div>
+          <div class="content">
+          <span> <%= customerName%></span>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="constrat-title"> 
+          <span> 납기 일자 </span>
+        </div>
+        <div class="content">
+          <span> <%= billDetail.deadLine %> </span>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="constrat-title">
+          <span>납부하실 금액</span>
+        </div>
+        <div class="content">
+          <span> <%= billDetail.totalCharge %> </span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row" style="height: 12%;" >
+      <div class="col-3">
+        <div class="border">
+          <table class="grid">
+            <tr>
+              <td style="width: 20%;">구독고객</td>
+              <td class="align-right"><%= subscriptionInfo.customerRegName %></td>
+            </tr>
+            <tr>
+              <td style="width: 20%;">구독ID</td>
+              <td class="align-right"><%= subscriptionInfo.id %></td>
+            </tr>
+            <tr>
+              <td style="width: 20%;">구독명</td>
+              <td class="align-right"><%= subscriptionInfo.name%></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="border">
+          <table class="grid">
+            <tr>
+              <td>사용 시작일</td>
+              <td class="align-right"><%= billDetail.startDate %></td>
+            </tr>
+            <tr>
+              <td>사용 종료일</td>
+              <td class="align-right"><%= billDetail.endDate %></td>
+            </tr>
+            <tr>
+              <td>사용 기간(일)</td>
+              <td class="align-right"><%= billDetail.numOfDays %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="border">
+          <table class="grid">
+            <tr>
+              <td>이번 달 요금</td>
+              <td class="align-right"><%= billDetail.usageAmount %></td>
+            </tr>
+            <tr>
+              <td>할인 요금</td>
+              <td class="align-right"><%= billDetail.discountAmount %></td>
+            </tr>
+            <tr>
+              <td>평균 할인율</td>
+              <td class="align-right"><%= billDetail.avgDiscountRate%></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="border">
+          <table class="grid">
+            <tr>
+              <td>미납 요금</td>
+              <td class="align-right"><%= billDetail.unpaidAmount %></td>
+            </tr>
+            <tr>
+              <td>이번 달 + 미납 요금</td>
+              <td class="align-right"><%= billDetail.chargePlusUnpaid %></td>
+            </tr>
+            <tr>
+              <td>부가 가치세</td>
+              <td class="align-right"><%= billDetail.taxAmount%></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="pdfCom" class="row" style="height: 50%;">
+      <!-- usage table -->
+      <div class="col-4">
+        <div style="height: 95%; margin: 5px;">
+          <div >
+            <span>사용 내역</span>
+          </div>
+          
+          <table class="table align-center">
+            <thead>
+              <tr>
+                <th style="width: 5%;" class>No</th>
+                <th style="width: 40%;">서비스</th>
+                <th style="width: 23%;">사용요금</th>
+                <th style="width: 12%;">할인율</th>
+                <th style="width: 20%;">할인요금</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for( let index = 0; index < usageSummary.items.length; index++ ) { %>
+                <tr>
+                  <td> <%= index + 1 %></td>
+                  <td> <%= usageSummary.items[index].serviceName %> </td>
+                  <td class="align-right"> <%= usageSummary.items[index].usageAmount %> </td>
+                  <td> <%= usageSummary.items[index].discountRate %>%</td>
+                  <td class="align-right"> <%= usageSummary.items[index].discountAmount %></td>
+                </tr>
+              <% } %>
+            </tbody>
+            <tfoot style="background: #8c949e;">
+              <tr>
+                <td></td>
+                <td>합계</td>
+                <td class="align-right"><%= usageSummary.sum.totalUsage %></td>
+                <td></td>
+                <td class="align-right"><%= usageSummary.sum.totalDiscountAmount %></td>
+              </tr>
+            </tfoot>
+          </table>
+          
+        </div>
+        <div>
+            <span>※ 사용 요금은 십원 단위 절사를 반영한 금액입니다.</span>
+        </div>
+      </div>
+
+      <!-- donut chart -->
+      <div class="col-4 align-center">
+          <div style="margin-top: 50px;">
+            <div id="donutchart" style="width: 500px; height: 500px;" ></div>
+          </div>
+      </div>
+
+      <!-- bar chart -->
+      <div class="col-4 align-center" >
+          <div style="padding: 10px;">
+            <div id="barChart" style="width: 500px; height: 500px;" ></div>
+          </div>
+      </div>
+    </div>
+
+    <!-- footer row -->
+    <div class="row" style="margin-top: 5px;">
+      <div class="primary-color" style="height: 5px;"></div>
+      <button style="height: 50px;" onclick="myFunction()">Click me</button>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable( <%- JSON.stringify(doughnutChartData) %>);
+      var options = {
+        title: '',
+        pieHole: 0.4,
+        legend: { position: 'top', alignment:'center', maxLines: 10 }
+      };
+      var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+      chart.draw(data, options);
+
+
+      var barData = google.visualization.arrayToDataTable( <%- JSON.stringify(barChartData) %> );
+      var barView = new google.visualization.DataView(barData);
+      // barView.setColumns([
+      //   0, 
+      //   1,
+      //   {
+      //     calc: "stringify",
+      //     sourceColumn: 1,
+      //     type: "string",
+      //     role: "annotation"
+      //   },
+      //   2,
+      // ]);
+
+      var barOptions = {
+        title: " ",
+        bar: {groupWidth: "85%"},
+        legend: { position: "none" },
+        backgroundColor:'#682A7D',
+        hAxis: {textStyle: {   color: '#ffffff'}},
+        vAxis: {baseline: 0, textStyle: {   color: '#ffffff'}}
+      };
+      var barChart = new google.visualization.ColumnChart(document.getElementById("barChart"));
+      barChart.draw(barView, barOptions);
+    }
+  </script>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js" integrity="sha512-pdCVFUWsxl1A4g0uV6fyJ3nrnTGeWnZN2Tl/56j45UvZ1OMdm9CIbctuIHj+yBIRTUUyv6I9+OivXj4i0LPEYA==" crossorigin="anonymous"></script>
+
+  <script>
+    function createPDF(){
+
+        let element = document.querySelector('#mypage')
+        html2pdf(element, {
+          margin: 0,
+          filename: 'export.pdf',
+          html2canvas: { width: 1684, height: 1091, scale: 2},
+          jsPDF: {
+            orientation: 'landscape',
+            unit: 'cm',
+            format: 'a4'
+          },
+          pagebreak : {
+            mode: 'avoid-all'
+          }
+        })
+
+        html2pdf().set(opt).from(element).save();
+
+    };
+
+    function myFunction() {
+      console.log('ha');
+      createPDF();
+    }
+
+    // $( document ).ready(function() {
+    //   console.log( "ready!" );
+    //   createPDF();
+    // });
+  </script>
+</body>
+</html>

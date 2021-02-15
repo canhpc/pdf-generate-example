@@ -4,7 +4,7 @@
   "description": "Create pdf report which include graph using chartjs",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon -e js,ejs app.js"
   },
   "repository": {
     "type": "git",
